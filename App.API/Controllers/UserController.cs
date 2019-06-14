@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using App.API.Models;
+﻿using App.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
@@ -13,29 +9,29 @@ namespace App.API.Controllers
     public class UserController : ControllerBase
     {
 
-        private IMongoCollection<User> collection;
-        public UserController()
+        private IMongoCollection<User> _collection;
+
+        public UserController(IMongoCollection<User> collection)
         {
-            var client = new MongoClient("mongodb://admin:admin@10.0.75.1:27017");
-            IMongoDatabase db = client.GetDatabase("Demo01");
-            this.collection = db.GetCollection<User>("User");
+            _collection = collection;
         }
 
         public IActionResult Index()
         {
-            var model = collection.Find(FilterDefinition<User>.Empty).ToList();
+            var model = _collection.Find(FilterDefinition<User>.Empty).ToList();
             return Ok(model);
         }
         [HttpPost]
         public IActionResult RegisterUser(User user)
         {
-            var model = collection.Find(a => a.Nombres == user.Nombres);
+            var model = _collection.Find(a => a.Nombres == user.Nombres);
             if (model != null)
             {
                 return BadRequest();
             }
-            collection.InsertOne(user);
-            var usuarioInsertado = collection.Find(a => a.Nombres == user.Nombres);
+
+            _collection.InsertOne(user);
+            var usuarioInsertado = _collection.Find(a => a.Nombres == user.Nombres);
             return Ok(usuarioInsertado);
 
         }
