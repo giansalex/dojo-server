@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using App.API.Models;
+﻿using App.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
@@ -13,36 +9,36 @@ namespace App.API.Controllers
     public class UserController : ControllerBase
     {
 
-        private IMongoCollection<User> collection;
-        public UserController()
+        private IMongoCollection<User> _collection;
+
+        public UserController(IMongoCollection<User> collection)
         {
-            var client = new MongoClient("mongodb://admin:admin@10.0.75.1:27017");
-            IMongoDatabase db = client.GetDatabase("Demo01");
-            this.collection = db.GetCollection<User>("User");
+            _collection = collection;
         }
 
         public IActionResult Index()
         {
-            var model = collection.Find(FilterDefinition<User>.Empty).ToList();
+            var model = _collection.Find(FilterDefinition<User>.Empty).ToList();
             return Ok(model);
         }
         [HttpPost]
         public async Task<IActionResult> Register(User user)
         {
-            var model = collection.Find(a => a.Nombres == user.Nombres);
+            var model = _collection.Find(a => a.Nombres == user.Nombres);
             if (model != null)
             {
                 return BadRequest();
             }
-             await collection.InsertOneAsync(user);
-            var usuarioInsertado = collection.Find(a => a.Nombres == user.Nombres);
+             await _collection.InsertOneAsync(user);
+            _collection.InsertOne(user);
+            var usuarioInsertado = _collection.Find(a => a.Nombres == user.Nombres);
             return Ok(usuarioInsertado);
         }
 
         [HttpPost]
         public async Task<IActionResult> Login([FromBody]User user)
         {
-            var model = await collection.FindAsync(a => a.Nombres == user.Nombres && a.Email == user.Email);
+            var model = await _collection.FindAsync(a => a.Nombres == user.Nombres && a.Email == user.Email);
             if (model == null)
                 return NotFound();
 
