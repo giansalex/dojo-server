@@ -22,18 +22,27 @@ namespace App.API.Controllers
             return Ok(model);
         }
         [HttpPost]
-        public IActionResult RegisterUser(User user)
+        public async Task<IActionResult> Register(User user)
         {
             var model = _collection.Find(a => a.Nombres == user.Nombres);
             if (model != null)
             {
                 return BadRequest();
             }
-
+             await _collection.InsertOneAsync(user);
             _collection.InsertOne(user);
             var usuarioInsertado = _collection.Find(a => a.Nombres == user.Nombres);
             return Ok(usuarioInsertado);
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody]User user)
+        {
+            var model = await _collection.FindAsync(a => a.Nombres == user.Nombres && a.Email == user.Email);
+            if (model == null)
+                return NotFound();
+
+            return Ok(model);
         }
     }
 }
