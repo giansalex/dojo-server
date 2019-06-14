@@ -27,7 +27,7 @@ namespace App.API.Controllers
             return Ok(model);
         }
         [HttpPost]
-        public IActionResult RegisterUser(User user)
+        public IActionResult Register(User user)
         {
             var model = collection.Find(a => a.Nombres == user.Nombres);
             if (model != null)
@@ -38,6 +38,16 @@ namespace App.API.Controllers
             var usuarioInsertado = collection.Find(a => a.Nombres == user.Nombres);
             return Ok(usuarioInsertado);
 
+        }
+
+        [HttpPost]
+        public IActionResult Login([FromBody]User user)
+        {
+            var model = collection.Find(a => a.Nombres == user.Nombres && a.Email == user.Email);
+            if (model == null)
+                return NotFound();
+
+            return Ok(model);
         }
     }
 }
