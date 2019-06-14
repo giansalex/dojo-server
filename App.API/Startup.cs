@@ -37,6 +37,13 @@ namespace App.API
                 app.UseHsts();
             }
 
+            var hosts = Configuration.GetSection("Cors:AllowOrigin").Value;
+            app.UseCors(builder => builder
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .WithOrigins(hosts)
+                .AllowCredentials()
+            );
             app.UseHttpsRedirection();
             app.UseMvc();
         }
