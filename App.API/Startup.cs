@@ -1,5 +1,4 @@
-﻿using App.Model;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -20,10 +19,10 @@ namespace App.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.Configure<Settings>(options => {
-                options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
-                options.Database = Configuration.GetSection("MongoConnection:Demo01").Value;
-            });
+            //services.Configure<Settings>(options => {
+            //    options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
+            //    options.Database = Configuration.GetSection("MongoConnection:Demo01").Value;
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
