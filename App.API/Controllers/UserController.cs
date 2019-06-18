@@ -30,8 +30,8 @@ namespace App.API.Controllers
             {
                 return BadRequest();
             }
-             await _collection.InsertOneAsync(user);
-            _collection.InsertOne(user);
+            await _collection.InsertOneAsync(user);
+
             var usuarioInsertado = _collection.Find(a => a.Nombres == user.Nombres);
             return Ok(usuarioInsertado);
         }
